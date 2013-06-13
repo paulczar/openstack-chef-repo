@@ -24,6 +24,23 @@ To actually deploy the repository to your Chef server, run the following command
 spiceweasel -e infrastructure.yml
 ```
 
+# Vagrant #
+
+This repository can be used with Vagrant ( 1.2.1+ ).
+
+Requires `vagrant-omnibus` and `vagrant-berkshelf` vagrant plugins.
+
+Example Usage:
+
+`vagrant up chef`
+
+This will load up a chef server using `Berkshelf-vagrant` to bootstrap it via Berkshelf and chef-solo and then will run `spiceweasel -e infrastructure.yml` to configure the infrastructure as explained above.
+
+`ALLOW_BERKS=false vagrant up openstack`
+
+This will load up the `openstack` VM according to the details in the `:chef_client` config stanza in the `Vagrantfile` for the VM.   The example used just installs with the `os-base` role.  you should be able to change the role to `allinone` for an allinone openstack install.
+
+
 # Cookbooks #
 
 The cookbooks have been designed and written in such a way that they can be used to deploy individual service components on _any_ of the nodes in the infrastructure; in short they can be used for single node 'all-in-one' installs (for testing), right up to multi/many node production installs. In order to achieve this flexibility, they are configured by attributes which may be used to override search. Chef 10 or later is currently required, but the intention is to [move to Chef 11 with the `havana` release](https://bugs.launchpad.net/openstack-chef/+bug/1183540) to take advantage of features such as [partial search](http://docs.opscode.com/essentials_search_partial.html). Ruby 1.9.x is considered the minimum supported version of Ruby as well. Most users of this repository test with the full-stack Chef 11 client and a Chef server (Chef Solo is not explicity supported).

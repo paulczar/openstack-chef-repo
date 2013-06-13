@@ -1,21 +1,15 @@
-raise "You must set the ORGNAME environment variable" if ENV['ORGNAME'].nil?
-current_dir = File.dirname(__FILE__)
-user = ENV['OPSCODE_USER'] || ENV['USER']
+chef_node_name                = ENV['chef_node_name'] || "admin"
+chef_client_key               = ENV['chef_client_key'] || "/vagrant/.chef/admin.pem"
+chef_validation_client_name   = ENV['chef_validation_client_name'] || "chef-validator"
+chef_validation_key           = ENV['chef_validation_key'] || "/vagrant/.chef/chef-validator.pem"
+chef_server_url               = ENV['chef_server_url'] || "https://chef"
+
 log_level                :info
 log_location             STDOUT
-node_name                user
-client_key               "#{current_dir}/#{user}.pem"
-validation_client_name   "#{ENV['ORGNAME']}-validator"
-validation_key           "#{current_dir}/#{ENV['ORGNAME']}-validator.pem"
-chef_server_url          "https://api.opscode.com/organizations/#{ENV['ORGNAME']}"
+node_name                chef_node_name
+client_key               chef_client_key
+validation_client_name   chef_validation_client_name
+validation_key           chef_validation_key
+chef_server_url          chef_server_url
 cache_type               'BasicFile'
-cache_options( :path => "#{current_dir}/checksums" )
-cookbook_path            ["#{current_dir}/../cookbooks"]
-role_path                ["#{current_dir}/../roles"]
-
-# OpenStack
-knife[:openstack_username] = ENV['OS_USERNAME']
-knife[:openstack_password] = ENV['OS_PASSWORD']
-knife[:openstack_auth_url] = ENV['OS_AUTH_URL']
-knife[:openstack_tenant]   = ENV['OS_TENANT']
-knife[:identity_file]      = ENV['OS_IDENTITY_FILE']
+cache_options( :path => '/home/vagrant/.chef/checksums' )
