@@ -16,10 +16,10 @@ cookbooks:
 
 roles:
 - os-base:
-#- os-ops-messaging:
-#- os-ops-database:
-#- allinone-compute:
-#- os-compute-single-controller:
+- os-ops-messaging:
+- os-ops-database:
+- allinone-compute:
+- os-compute-single-controller:
 - os-block-storage-api:
 - os-block-storage-scheduler:
 - os-block-storage-worker:
@@ -41,16 +41,17 @@ roles:
 - os-image-registry:
 - os-image:
 - os-image:
-#- os-network:
-#- os-object-storage-account:
-#- os-object-storage-container:
-#- os-object-storage-management:
-#- os-object-storage-object:
-#- os-object-storage-proxy:
-#- os-object-storage:
+- os-network:
+- os-object-storage-account:
+- os-object-storage-container:
+- os-object-storage-management:
+- os-object-storage-object:
+- os-object-storage-proxy:
+- os-object-storage:
 
 environments:
 - example:
+- vagrant:
 
 data bags:
 

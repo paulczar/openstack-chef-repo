@@ -7,6 +7,10 @@
     ]
   },
   "run_list": [
-    "role[allinone-compute]"
+    "role[os-base]",
+    "role[os-ops-database]",
+    "role[os-ops-messaging]",
+    "role[os-identity]"
   ]
 }
+

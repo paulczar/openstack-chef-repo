@@ -1,0 +1,39 @@
+{
+  "sources": {
+    "apt": {
+      "locked_version": "1.9.2"
+    },
+    "build-essential": {
+      "locked_version": "1.4.0"
+    },
+    "ruby": {
+      "locked_version": "0.9.2"
+    },
+    "git": {
+      "locked_version": "2.5.2"
+    },
+    "curl": {
+      "locked_version": "1.1.0"
+    },
+    "chef-server": {
+      "locked_version": "2.0.0",
+      "git": "git://github.com/opscode-cookbooks/chef-server.git",
+      "ref": "18d6e951a2daa1154b7e82c8909bb7245e57ec1b"
+    },
+    "dmg": {
+      "locked_version": "1.1.0"
+    },
+    "yum": {
+      "locked_version": "2.3.0"
+    },
+    "windows": {
+      "locked_version": "1.10.0"
+    },
+    "chef_handler": {
+      "locked_version": "1.1.4"
+    },
+    "runit": {
+      "locked_version": "1.1.6"
+    }
+  }
+}

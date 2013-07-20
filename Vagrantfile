@@ -17,11 +17,16 @@ ALLOW_BERKS = ENV['ALLOW_BERKS'] || true
 
 # We'll mount the Chef::Config[:file_cache_path] so it persists between
 # Vagrant VMs
-host_cache_path = File.expand_path("../.cache", __FILE__)
+#host_cache_path = File.expand_path("../.cache", __FILE__)
 guest_cache_path = "/tmp/vagrant-cache"
 
 
 Vagrant.configure("2") do |config|
+  # Cachier - speeds up subsequent runs.
+  # vagrant plugin install vagrant-cachier
+  config.cache.auto_detect = true
+  #config.cache.enable_nfs  = true
+
   # Map .chef dir to /root/.chef to help knife etc.
   config.vm.synced_folder ".chef", "/root/.chef"
   config.vm.synced_folder ".berkshelf", "/root/.berkshelf"
@@ -39,6 +44,12 @@ Vagrant.configure("2") do |config|
 
   # Ensure Chef 11.x is installed for provisioning
   config.omnibus.chef_version = :latest
+
+  # enable avahi / mdns
+  config.vm.provision :shell, :inline => <<-SCRIPT
+    apt-get -y install avahi-daemon
+    echo "gem: --no-ri --no-rdoc" >> ~/.gemrc
+  SCRIPT
 
   # bootstrap all nodes with general apps.
   config.vm.provision :chef_solo do |chef|
@@ -93,9 +104,6 @@ Vagrant.configure("2") do |config|
         mkdir -p ~/.berkshelf
         cd /vagrant
         spiceweasel --execute /vagrant/infrastructure.yml
-        # bug somewhere causes berks upload to fail, so rerun.
-        #### Encoding::InvalidByteSequenceError: "\xC8" on US-ASCII
-        berks upload --no-freeze --halt-on-frozen -b ./Berksfile
         cd /vagrant/nodes/; for i in $(ls *.json); do knife node from file $i; done
     SCRIPT
     config.vm.provider :virtualbox do |vb|
@@ -121,15 +129,15 @@ Vagrant.configure("2") do |config|
       cp /vagrant/.chef/client.rb /etc/chef/client.rb
       chef-client
       echo "restart all the services for shits n giggles..."
-      cd /etc/init.d/; for i in $(ls nova-*); do service $i restart; done
-      sleep 10
-      sudo nova-manage service list
-      echo "##################################"
-      echo "#     Openstack Installed        #"
-      echo "#   visit https://33.33.33.60    #"
-      echo "#   default username: admin      #"
-      echo "#   default password: vagrant    #"
-      echo "##################################"
+      #cd /etc/init.d/; for i in $(ls nova-*); do service $i restart; done
+      #sleep 10
+      #sudo nova-manage service list
+      #echo "##################################"
+      #echo "#     Openstack Installed        #"
+      #echo "#   visit https://33.33.33.60    #"
+      #echo "#   default username: admin      #"
+      #echo "#   default password: vagrant    #"
+      #echo "##################################"
     SCRIPT
     config.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--cpus", 2]

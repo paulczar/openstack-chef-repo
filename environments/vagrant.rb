@@ -25,11 +25,11 @@ override_attributes(
      "network" => {
        "fixed_range" => "192.168.100.0/24",
        "public_interface" => "eth0"
-     },
-      "libvirt": { 
-        "virt_type": "qemu" 
+      },
+      "libvirt" => { 
+       "virt_type" => "qemu" 
       },     
-     "networks" => [
+      "networks" => [
        {
          "label" => "public",
          "ipv4_cidr" => "192.168.100.0/24",
