@@ -69,7 +69,7 @@
     "openstack-network": {
       "locked_version": "7.0.0",
       "git": "git://github.com/paulczar/cookbook-openstack-network.git",
-      "ref": "e8bc2847d654e681242c9b1b6d2dd98396edbbb0"
+      "ref": "0b400a8d293c5f25ffab552a67e1149c2322f093"
     },
     "openstack-object-storage": {
       "locked_version": "1.0.16",

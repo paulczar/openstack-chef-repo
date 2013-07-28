@@ -57,11 +57,6 @@ override_attributes(
      },
      "identity_service_chef_role" => "allinone-compute"
    },
-#   "osops_networks" => {
-#     "public" => "33.33.33.0/24",
-#     "management" => "33.33.33.0/24",
-#     "nova" => "33.33.33.0/24"
-#   },  
    "block-storage" => {
      "keystone_service_chef_role" => "allinone-compute"
    },

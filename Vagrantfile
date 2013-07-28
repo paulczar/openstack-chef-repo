@@ -27,6 +27,7 @@ Vagrant.configure("2") do |config|
 
   # Map .chef dir to /root/.chef to help knife etc.
   config.vm.synced_folder ".chef", "/root/.chef"
+  # use the config.json and allow caching of cookbooks in berkshelf.
   config.vm.synced_folder ".berkshelf", "/root/.berkshelf"
 
   # Enable the berkshelf-vagrant plugin
@@ -126,7 +127,7 @@ Vagrant.configure("2") do |config|
       #echo "restart all the services for shits n giggles..."
       #cd /etc/init.d/; for i in $(ls nova-*); do service $i restart; done
       #sleep 10
-      sudo nova-manage service list
+      nova-manage service list
       echo "##################################"
       echo "#     Openstack Installed        #"
       echo "#   visit https://33.33.33.60    #"
