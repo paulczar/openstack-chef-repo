@@ -30,15 +30,20 @@ This repository can be used with Vagrant ( 1.2.1+ ).
 
 Requires `vagrant-omnibus` and `vagrant-berkshelf` vagrant plugins.
 
+Uses a box I created that has some of the packages needed for the environment preinstalled. - https://s3.amazonaws.com/paul-cz-misc/stackforge-openstack.box.
+
+If you wish to use a local box ( ubuntu 12.04 ) you can run this first `export BOX_NAME=precise64`,  or update it in the `Vagrantfile`  this will not only load your box but signal berkshelf and chef-solo to install any needed packages.
+
 Example Usage:
 
 `vagrant up chef`
 
-This will load up a chef server using `Berkshelf-vagrant` to bootstrap it via Berkshelf and chef-solo and then will run `spiceweasel -e infrastructure.yml` to configure the infrastructure as explained above.
 
-`ALLOW_BERKS=false vagrant up openstack`
+This will load up a chef server using `Berkshelf-vagrant` to bootstrap it via Berkshelf and chef-solo and then will run load up the nodes, environment and roles to configure the infrastructure as explained above.
 
-This will load up the `openstack` VM according to the details in the `:chef_client` config stanza in the `Vagrantfile` for the VM.   The example used just installs with the `os-base` role.  you should be able to change the role to `allinone` for an allinone openstack install.
+`vagrant up allinone`
+
+This will load up the `allinone` VM using the role 'allinone-compute'.    
 
 
 # Cookbooks #
