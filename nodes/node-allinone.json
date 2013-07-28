@@ -3,14 +3,9 @@
   "chef_environment": "vagrant",
   "normal": {
     "tags": [
-
     ]
   },
   "run_list": [
-    "role[os-base]",
-    "role[os-ops-database]",
-    "role[os-ops-messaging]",
-    "role[os-identity]"
+    "role[allinone-compute]"
   ]
 }
-

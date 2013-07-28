@@ -1,5 +1,5 @@
 berksfile:
-    options: '--no-freeze --halt-on-frozen'
+#    options: '--no-freeze --halt-on-frozen'
 
 cookbooks:
 # - openstack-common:
@@ -15,32 +15,34 @@ cookbooks:
 # - openstack-ops-messaging:
 
 roles:
-- os-base:
-- os-ops-messaging:
-- os-ops-database:
 - allinone-compute:
-- os-compute-single-controller:
+- os-base:
 - os-block-storage-api:
+- os-block-storage-endpoint-registration:
+- os-block-storage:
 - os-block-storage-scheduler:
 - os-block-storage-worker:
-- os-block-storage:
 - os-compute-api-ec2:
 - os-compute-api-metadata:
 - os-compute-api-os-compute:
 - os-compute-api:
 - os-compute-cert:
+- os-compute-endpoint-registration:
+- os-compute:
 - os-compute-scheduler:
+- os-compute-single-controller:
 - os-compute-vncproxy:
 - os-compute-worker:
 - os-dashboard:
 - os-identity-api-admin:
 - os-identity-api:
 - os-identity:
-- os-identity:
 - os-image-api:
+- os-image-endpoint-registration:
+- os-image:
 - os-image-registry:
-- os-image:
-- os-image:
+- os-infra-caching:
+- os-network-endpoint-registration:
 - os-network:
 - os-object-storage-account:
 - os-object-storage-container:
@@ -48,6 +50,8 @@ roles:
 - os-object-storage-object:
 - os-object-storage-proxy:
 - os-object-storage:
+- os-ops-database:
+- os-ops-messaging:
 
 environments:
 - example:
