@@ -14,16 +14,15 @@ cookbook 'xfs', '1.1.0'
 cookbook 'yum', '2.2.2'
 
 
-cookbook 'openstack-block-storage', github: 'stackforge/cookbook-openstack-block-storage'
+cookbook 'openstack-block-storage', github: 'paulczar/cookbook-openstack-block-storage'
 cookbook 'openstack-common', github: "stackforge/cookbook-openstack-common"
-cookbook 'openstack-compute', github: 'stackforge/cookbook-openstack-compute'
-cookbook 'openstack-dashboard', github: 'stackforge/cookbook-openstack-dashboard'
-cookbook 'openstack-identity', github: 'stackforge/cookbook-openstack-identity'
-cookbook 'openstack-image', github: 'stackforge/cookbook-openstack-image'
+cookbook 'openstack-compute', github: 'paulczar/cookbook-openstack-compute'
+cookbook 'openstack-dashboard', github: 'paulczar/cookbook-openstack-dashboard'
+cookbook 'openstack-identity', github: 'paulczar/cookbook-openstack-identity'
+cookbook 'openstack-image', github: 'paulczar/cookbook-openstack-image'
 #cookbook 'openstack-metering', github: 'stackforge/cookbook-openstack-metering'
 cookbook 'openstack-network', github: 'paulczar/cookbook-openstack-network'
-#cookbook 'openstack-network', github: 'stackforge/cookbook-openstack-network'
 cookbook 'openstack-object-storage', github: 'stackforge/cookbook-openstack-object-storage'
-cookbook 'openstack-ops-database', github: 'stackforge/cookbook-openstack-ops-database'
-cookbook 'openstack-ops-messaging', github: 'stackforge/cookbook-openstack-ops-messaging'
+cookbook 'openstack-ops-database', paulczar: 'stackforge/cookbook-openstack-ops-database'
+cookbook 'openstack-ops-messaging', paulczar: 'stackforge/cookbook-openstack-ops-messaging'
 
