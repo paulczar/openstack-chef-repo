@@ -11,7 +11,7 @@ end
 # Allows us to pick a different box by setting Environment Variables
 BOX_NAME = ENV['BOX_NAME'] || "stackforge-openstack"
 #BOX_NAME = ENV['BOX_NAME'] || "precise64"
-BOX_URI = ENV['BOX_URI'] || "https://opscode-vm.s3.amazonaws.com/vagrant/boxes/opscode-ubuntu-12.04.box"
+BOX_URI = ENV['BOX_URI'] || "https://s3.amazonaws.com/paul-cz-misc/stackforge-openstack.box"
 
 # We'll mount the Chef::Config[:file_cache_path] so it persists between
 # Vagrant VMs
@@ -98,8 +98,12 @@ Vagrant.configure("2") do |config|
         echo "This will take some time ... be patient."
         mkdir -p ~/.berkshelf
         cd /vagrant
-        spiceweasel --execute /vagrant/infrastructure.yml
-        cd /vagrant/nodes/; for i in $(ls *.json); do knife node from file $i; done
+        knife environment from file environments/*
+        knife node from file nodes/*
+        knife role from file roles/* 
+        berks upload
+        #spiceweasel --execute /vagrant/infrastructure.yml
+        #cd /vagrant/nodes/; for i in $(ls *.json); do knife node from file $i; done
     SCRIPT
     config.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--cpus", 2]
@@ -124,16 +128,16 @@ Vagrant.configure("2") do |config|
       cp /vagrant/.chef/chef-validator.pem /etc/chef/validation.pem
       cp /vagrant/.chef/client.rb /etc/chef/client.rb
       chef-client
-      #echo "restart all the services for shits n giggles..."
-      #cd /etc/init.d/; for i in $(ls nova-*); do service $i restart; done
-      #sleep 10
+      echo "something is skewiff ... just above ... second run fixes"
+      sleep 5
+      chef-client
+      # give everything a few seconds to settle down.
+      sleep 10
       nova-manage service list
-      echo "##################################"
-      echo "#     Openstack Installed        #"
-      echo "#   visit https://33.33.33.60    #"
-      echo "#   default username: admin      #"
-      echo "#   default password: admin      #"
-      echo "##################################"
+      echo "Run the below to test :-"
+      echo "source /root/openrc"
+      echo "glance image-create --name cirros --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img"
+      echo "nova boot omgponies --image cirros --flavor 1"
     SCRIPT
     config.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--cpus", 2]
