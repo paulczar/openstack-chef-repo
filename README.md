@@ -28,8 +28,8 @@ spiceweasel -e infrastructure.yml
 
 This repository can be used with Vagrant ( 1.2.1+ ).
 
-Requires `vagrant-omnibus` and `vagrant-berkshelf` vagrant plugins.
-
+Requires `vagrant-omnibus`, `vagrant-berkshelf`, `vagrant-cachier` vagrant plugins.
+ 
 Uses a box I created that has some of the packages needed for the environment preinstalled. - https://s3.amazonaws.com/paul-cz-misc/stackforge-openstack.box.
 
 If you wish to use a local box ( ubuntu 12.04 ) you can run this first `export BOX_NAME=precise64`,  or update it in the `Vagrantfile`  this will not only load your box but signal berkshelf and chef-solo to install any needed packages.
