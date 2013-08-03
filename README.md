@@ -36,7 +36,11 @@ If you wish to use a local box ( ubuntu 12.04 ) you can run this first `export B
 
 Example Usage:
 
-`vagrant up`
+```
+git clone git@github.com:paulczar/openstack-chef-repo.git -b vagrant 
+cd openstack-chef-repo
+vagrant up
+```
 
 
 This will load up a vagrant VM using `Berkshelf-vagrant` to bootstrap it via Berkshelf and start a chef-zero service and then will load up the nodes, environment and roles to configure the infrastructure as explained above.
