@@ -37,7 +37,7 @@ If you wish to use a local box ( ubuntu 12.04 ) you can run this first `export B
 Example Usage:
 
 ```
-git clone git@github.com:paulczar/openstack-chef-repo.git -b vagrant 
+git clone https://github.com/paulczar/openstack-chef-repo.git -b vagrant 
 cd openstack-chef-repo
 vagrant up
 ```
