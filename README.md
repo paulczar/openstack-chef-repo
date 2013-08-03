@@ -36,15 +36,21 @@ If you wish to use a local box ( ubuntu 12.04 ) you can run this first `export B
 
 Example Usage:
 
-`vagrant up chef`
+`vagrant up`
 
 
-This will load up a chef server using `Berkshelf-vagrant` to bootstrap it via Berkshelf and chef-solo and then will run load up the nodes, environment and roles to configure the infrastructure as explained above.
+This will load up a vagrant VM using `Berkshelf-vagrant` to bootstrap it via Berkshelf and start a chef-zero service and then will load up the nodes, environment and roles to configure the infrastructure as explained above.
 
-`vagrant up allinone`
+It will then run `chef-client` to configure itself as an all-in-one openstack server.
 
-This will load up the `allinone` VM using the role 'allinone-compute'.    
+once running you can do the following:
 
+```
+vagrant ssh
+source /home/vagrant/openrc
+glance image-create --name cirros --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
+nova boot omgponies --image cirros --flavor 1
+```
 
 # Cookbooks #
 

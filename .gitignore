@@ -1,6 +1,7 @@
 .chef/checksums/
 .chef/bootstrap/
 .chef/*.pem
+!.chef/client.pem
 *.swo
 *.swp
 *~

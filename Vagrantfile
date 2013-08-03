@@ -64,53 +64,6 @@ Vagrant.configure("2") do |config|
     end
   end
 
-
-  config.vm.define :chef do |config|
-    config.vm.box = BOX_NAME
-    config.vm.box_url = BOX_URI
-    config.vm.hostname = "chef"
-    config.vm.network :private_network, ip: "33.33.33.50"
-    config.ssh.max_tries = 40
-    config.ssh.timeout   = 120
-    config.ssh.forward_agent = true
-
-    config.vm.provision :chef_solo do |chef|
-      chef.provisioning_path = guest_cache_path
-      chef.json = {
-          "chef-server" => {
-              "version" => :latest
-          }
-      }
-      chef.run_list = [
-        "recipe[chef-server::default]"
-      ]
-    end
-
-    config.vm.provision :shell, :inline => <<-SCRIPT
-        mkdir -p /vagrant/.chef
-        cp /etc/chef-server/admin.pem /vagrant/.chef/
-        cp /etc/chef-server/chef-validator.pem /vagrant/.chef/
-        chown vagrant /vagrant/.chef/*
-        apt-get -y install libxslt-dev libxml2-dev # stupid Nokogiri!
-        gem install spiceweasel --no-ri --no-rdo
-        echo "Chef server installed!!"
-        echo "Running Spiceweasel to upload and configure cookbooks"
-        echo "This will take some time ... be patient."
-        mkdir -p ~/.berkshelf
-        cd /vagrant
-        knife environment from file environments/*
-        knife node from file nodes/*
-        knife role from file roles/* 
-        berks upload
-        #spiceweasel --execute /vagrant/infrastructure.yml
-        #cd /vagrant/nodes/; for i in $(ls *.json); do knife node from file $i; done
-    SCRIPT
-    config.vm.provider :virtualbox do |vb|
-        vb.customize ["modifyvm", :id, "--cpus", 2]
-        vb.customize ["modifyvm", :id, "--memory", 1024]
-    end
-  end
-
   config.vm.define :allinone do |config|
     config.vm.hostname = "allinone"
     config.vm.box = BOX_NAME
@@ -123,19 +76,27 @@ Vagrant.configure("2") do |config|
 
     config.vm.provision :shell, :inline => <<-SCRIPT
       ifconfig eth2 promisc
-      echo 33.33.33.50 chef >> /etc/hosts
       mkdir -p /etc/chef
-      cp /vagrant/.chef/chef-validator.pem /etc/chef/validation.pem
-      cp /vagrant/.chef/client.rb /etc/chef/client.rb
+      cp /vagrant/.chef/client.pem /etc/chef/client.pem
+      cp /vagrant/.chef/client.rb  /etc/chef/client.rb
+      apt-get -y install libxslt-dev libxml2-dev # stupid Nokogiri!
+      gem install chef-zero --no-ri --no-rdo
+      gem install berkshelf --no-ri --no-rdo
+      chef-zero -d
+      cd /vagrant           
+      knife environment from file environments/*
+      knife node from file nodes/*
+      knife role from file roles/* 
+      berks upload --no-freeze --halt-on-frozen
       chef-client
-      echo "something is skewiff ... just above ... second run fixes"
-      sleep 5
-      chef-client
-      # give everything a few seconds to settle down.
+      echo give everything a few seconds to settle down...
       sleep 10
+      cp /root/openrc /home/vagrant/openrc
+      chown vagrant:vagrant /home/vagrant/openrc
       nova-manage service list
       echo "Run the below to test :-"
-      echo "source /root/openrc"
+      echo "vagrant ssh"
+      echo "source /home/vagrant/openrc"
       echo "glance image-create --name cirros --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img"
       echo "nova boot omgponies --image cirros --flavor 1"
     SCRIPT
