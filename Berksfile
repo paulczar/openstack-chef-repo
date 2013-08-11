@@ -12,16 +12,23 @@ cookbook 'postgresql', '3.0.0'
 cookbook 'rabbitmq', '2.1.0'
 cookbook 'xfs', '1.1.0'
 cookbook 'yum', '2.2.2'
-
+cookbook "docker", github: "bflad/chef-docker"
+# See: https://github.com/NOX73/chef-golang/pull/4
+# cookbook "golang", github: "NOX73/chef-golang"
+cookbook "golang", github: "buth/chef-golang", ref: "lwrps"
+#cookbook "lxc", github: "hw-cookbooks/lxc"
+cookbook "lxc", github: "aespinosa/cookbook-lxc", branch: "change-default-secretfile"
+cookbook "modules", github: "Youscribe/modules-cookbook"
 
 cookbook 'openstack-block-storage', github: 'stackforge/cookbook-openstack-block-storage'
 cookbook 'openstack-common', github: "stackforge/cookbook-openstack-common"
 cookbook 'openstack-compute', github: 'paulczar/cookbook-openstack-compute'
 cookbook 'openstack-dashboard', github: 'stackforge/cookbook-openstack-dashboard'
 cookbook 'openstack-identity', github: 'stackforge/cookbook-openstack-identity'
-cookbook 'openstack-image', github: 'stackforge/cookbook-openstack-image'
+cookbook 'openstack-image', github: 'paulczar/cookbook-openstack-image', branch: 'data_api'
 cookbook 'openstack-network', github: 'paulczar/cookbook-openstack-network'
 cookbook 'openstack-object-storage', github: 'stackforge/cookbook-openstack-object-storage'
 cookbook 'openstack-ops-database', github: 'stackforge/cookbook-openstack-ops-database'
 cookbook 'openstack-ops-messaging', github: 'stackforge/cookbook-openstack-ops-messaging'
-#cookbook 'openstack-metering', github: 'stackforge/cookbook-openstack-metering'
+cookbook 'openstack-metering', github: 'stackforge/cookbook-openstack-metering'
+cookbook 'openstack-docker', github: 'paulczar/cookbook-openstack-docker'

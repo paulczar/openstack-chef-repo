@@ -89,16 +89,22 @@ Vagrant.configure("2") do |config|
       knife role from file roles/* 
       berks upload --no-freeze --halt-on-frozen
       chef-client
-      echo give everything a few seconds to settle down...
-      sleep 10
       cp /root/openrc /home/vagrant/openrc
       chown vagrant:vagrant /home/vagrant/openrc
+      cd /etc/init.d/; for i in $(ls nova-*); do service $i stop; done
+      cd /etc/init.d/; for i in $(ls glance-*); do service $i stop; done
+      service docker stop
+      service docker start
+      cd /etc/init.d/; for i in $(ls nova-*); do service $i start; done
+      cd /etc/init.d/; for i in $(ls glance-*); do service $i start; done
+      echo give everything 20 seconds to settle down...
+      sleep 20
       nova-manage service list
       echo "Run the below to test :-"
       echo "vagrant ssh"
       echo "source /home/vagrant/openrc"
-      echo "glance image-create --name cirros --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img"
-      echo "nova boot omgponies --image cirros --flavor 1"
+      echo "glance image-create --name dhrp/sshd"
+      echo "nova boot --flavor m1.tiny --image dhrp/sshd omgponies"
     SCRIPT
     config.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--cpus", 2]

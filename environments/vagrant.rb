@@ -6,6 +6,9 @@ override_attributes(
     "allow_remote_root" => true,
     "root_network_acl" => "%"
   },
+  "docker" => {
+    "bind_uri" => "tcp://127.0.0.1:4243"
+  },
   "openstack" => {
     "developer_mode" => true,
     "identity" => {
@@ -51,6 +54,7 @@ override_attributes(
     },
    "image" => {
      "image_upload" => false,
+     "data_api" => "glance.db.docker.api",
      "upload_images" => ["cirros"],
      "upload_image" => {
        "cirros" => "https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img"
@@ -61,13 +65,15 @@ override_attributes(
      "keystone_service_chef_role" => "allinone-compute"
    },
    "dashboard" => {
-     "keystone_service_chef_role" => "allinone-compute"
+     "keystone_service_chef_role" => "allinone-compute",
+     "debug" => "true",
    },
    "network" => {
     "rabbit_server_chef_role" => "allinone-compute"
    },
    "compute" => {
      "identity_service_chef_role" => "allinone-compute",
+     "driver" => "docker.DockerDriver",
      "network" => {
        "fixed_range" => "192.168.100.0/24",
        "public_interface" => "eth2"
