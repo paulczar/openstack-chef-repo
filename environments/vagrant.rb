@@ -11,44 +11,6 @@ override_attributes(
     "identity" => {
       "bind_interface" => "lo" 
     },
-    "endpoints" => {
-      "identity-api" => {
-        "scheme" => "http"
-      },
-      "identity-admin" => {
-        "scheme" => "http"
-      },
-      "compute-api" => {
-        "scheme" => "http"
-      },
-      "compute-ec2-api" => {
-        "scheme" => "http"
-      },
-      "compute-ec2-admin" => {
-        "scheme" => "http"
-      },
-      "compute-xvpvnc" => {
-        "scheme" => "http"
-      },
-      "compute-novnc" => {
-        "scheme" => "http"
-      },
-      "network-api" => {
-        "scheme" => "http"
-      },
-      "image-api" => {
-        "scheme" => "http"
-      },
-      "image-registry" => {
-        "scheme" => "http"
-      },
-      "volume-api" => {
-        "scheme" => "http"
-      },
-      "metering-api" => {
-        "scheme" => "http"
-      },
-    },
    "image" => {
      "image_upload" => false,
      "upload_images" => ["cirros"],
@@ -71,6 +33,9 @@ override_attributes(
      "network" => {
        "fixed_range" => "192.168.100.0/24",
        "public_interface" => "eth2"
+      },
+      "config" => {
+        "ram_allocation_ratio" => 5.0
       },
       "libvirt" => { 
        "virt_type" => "qemu" 

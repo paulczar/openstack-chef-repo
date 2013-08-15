@@ -87,7 +87,7 @@ Vagrant.configure("2") do |config|
       knife environment from file environments/*
       knife node from file nodes/*
       knife role from file roles/* 
-      berks upload --no-freeze --halt-on-frozen
+      berks upload 
       chef-client
       echo give everything a few seconds to settle down...
       sleep 10
@@ -107,15 +107,5 @@ Vagrant.configure("2") do |config|
       vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
     end
   end
-
-#  I used this to create the stackforge-openstack box 
-#  config.vm.define :base do |config|
-#    config.vm.hostname = "base"
-#    config.vm.box = "precise64"
-#    config.vm.box_url = BOX_URI
-#    config.ssh.max_tries = 40
-#    config.ssh.timeout   = 120
-#    config.ssh.forward_agent = true
-#  end
 
 end
