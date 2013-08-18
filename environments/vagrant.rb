@@ -3,54 +3,99 @@ description "Example environment defineing the network and database settings you
 
 override_attributes(
   "mysql" => {
+    "server_root_password" => "root",
+    "server_debian_password" => "root",
+    "server_repl_password" => "root",
     "allow_remote_root" => true,
     "root_network_acl" => "%"
   },
   "docker" => {
     "bind_uri" => "tcp://127.0.0.1:4243"
   },
+  "lxc" => {
+    "allowed_types" => [ "ubuntu" ]
+  },
   "openstack" => {
+    "auth" => {
+      "validate_certs" => false
+    },
+    "endpoints" => {
+      "compute-api" => {
+        "host"   => "33.33.33.60",
+        "scheme" => "http",
+        "port"   => "8774",
+        "path"   => "/v2/%(tenant_id)s"
+      },
+      "compute-ec2-admin" => {
+        "host"   => "33.33.33.60",
+        "scheme" => "http",
+        "port"   => "8773",
+        "path"   => "/services/Admin"
+      },
+      "compute-ec2-api" => {
+        "host"   => "33.33.33.60",
+        "scheme" => "http",
+        "port"   => "8773",
+        "path"   => "/services/Cloud"
+      },
+      "compute-xvpvnc" => {
+        "host"   => "33.33.33.60",
+        "scheme" => "http",
+        "port"   => "6081",
+        "path"   => "/console"
+      },
+      "compute-novnc" => {
+        "host"   => "33.33.33.60",
+        "scheme" => "http",
+        "port"   => "6080",
+        "path"   => "/vnc_auto.html"
+      },
+      "image-api" => {
+        "host"   => "33.33.33.60",
+        "scheme" => "http",
+        "port"   => "9292",
+        "path"   => "/v2"
+      },
+      "image-registry" => {
+        "host"   => "33.33.33.60",
+        "scheme" => "http",
+        "port"   => "9191",
+        "path"   => "/v2"
+      },
+      "identity-api" => {
+        "host"   => "33.33.33.60",
+        "scheme" => "http",
+        "port"   => "5000",
+        "path"   => "/v2.0"
+      },
+      "identity-admin" => {
+        "host"   => "33.33.33.60",
+        "scheme" => "http",
+        "port"   => "35357",
+        "path"   => "/v2.0"
+      },
+      "volume-api" => {
+        "host"   => "33.33.33.60",
+        "scheme" => "http",
+        "port"   => "8776",
+        "path"   => "/v1/%(tenant_id)s"
+      },
+      "metering-api" => {
+        "host"   => "33.33.33.60",
+        "scheme" => "http",
+        "port"   => "8777",
+        "path"   => "/v1"
+      },
+      "network-api" => {
+        "host"   => "33.33.33.60",
+        "scheme" => "http",
+        "port"   => "9696",
+        "path"   => "/v2"
+      }
+    },    
     "developer_mode" => true,
     "identity" => {
       "bind_interface" => "lo" 
-    },
-    "endpoints" => {
-      "identity-api" => {
-        "scheme" => "http"
-      },
-      "identity-admin" => {
-        "scheme" => "http"
-      },
-      "compute-api" => {
-        "scheme" => "http"
-      },
-      "compute-ec2-api" => {
-        "scheme" => "http"
-      },
-      "compute-ec2-admin" => {
-        "scheme" => "http"
-      },
-      "compute-xvpvnc" => {
-        "scheme" => "http"
-      },
-      "compute-novnc" => {
-        "scheme" => "http"
-      },
-      "network-api" => {
-        "scheme" => "http"
-      },
-      "image-api" => {
-        "scheme" => "http"
-      },
-      "image-registry" => {
-        "scheme" => "http"
-      },
-      "volume-api" => {
-        "scheme" => "http"
-      },
-      "metering-api" => {
-        "scheme" => "http"
-      },
     },
    "image" => {
      "image_upload" => false,
@@ -74,6 +119,9 @@ override_attributes(
    "compute" => {
      "identity_service_chef_role" => "allinone-compute",
      "driver" => "docker.DockerDriver",
+     "config" => {
+        "ram_allocation_ratio" => 5.0
+     },
      "network" => {
        "fixed_range" => "192.168.100.0/24",
        "public_interface" => "eth2"

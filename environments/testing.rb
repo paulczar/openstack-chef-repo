@@ -12,6 +12,9 @@ override_attributes(
   "docker" => {
     "bind_uri" => "tcp://127.0.0.1:4243"
   },
+  "lxc" => {
+    "allowed_types" => [ "ubuntu" ]
+  },  
   "openstack" => {
     "auth" => {
       "validate_certs" => false
@@ -32,7 +35,10 @@ override_attributes(
       },
     },
     "compute" => {
-      "syslog" => {
+      "config" => {
+         "ram_allocation_ratio" => 5.0
+       },
+       "syslog" => {
         "use" => false
       },
       "driver" => "docker.DockerDriver",

@@ -1,12 +1,11 @@
 {
   "name": "allinone",
-  "chef_environment": "vagrant",
+  "chef_environment": "testing",
   "normal": {
     "tags": [
     ]
   },
   "run_list": [
-    "role[allinone-compute]",
-    "role[os-docker]"
+    "role[allinone-compute]"
   ]
 }

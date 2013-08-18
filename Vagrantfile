@@ -15,14 +15,14 @@ BOX_URI = ENV['BOX_URI'] || "https://s3.amazonaws.com/paul-cz-misc/stackforge-op
 
 # We'll mount the Chef::Config[:file_cache_path] so it persists between
 # Vagrant VMs
-#host_cache_path = File.expand_path("../.cache", __FILE__)
-guest_cache_path = "/tmp/vagrant-cache"
+##host_cache_path = File.expand_path("../.cache", __FILE__)
+#guest_cache_path = "/tmp/vagrant-cache"
 
 
 Vagrant.configure("2") do |config|
   # Cachier - speeds up subsequent runs.
   # vagrant plugin install vagrant-cachier
-  config.cache.auto_detect = true
+  #config.cache.auto_detect = true
   #config.cache.enable_nfs  = true
 
   # Map .chef dir to /root/.chef to help knife etc.
@@ -43,11 +43,14 @@ Vagrant.configure("2") do |config|
     config.vm.provision :shell, :inline => <<-SCRIPT
       apt-get -y install avahi-daemon
       echo "gem: --no-ri --no-rdoc" >> ~/.gemrc
+      apt-get -y install libxslt-dev libxml2-dev # stupid Nokogiri!
+      gem install chef-zero --no-ri --no-rdo
+      gem install berkshelf --no-ri --no-rdo
     SCRIPT
 
     # bootstrap all nodes with general apps.
     config.vm.provision :chef_solo do |chef|
-      chef.provisioning_path = guest_cache_path
+      #chef.provisioning_path = guest_cache_path
       chef.json = {
           "languages" => {
             "ruby" => {
@@ -79,15 +82,16 @@ Vagrant.configure("2") do |config|
       mkdir -p /etc/chef
       cp /vagrant/.chef/client.pem /etc/chef/client.pem
       cp /vagrant/.chef/client.rb  /etc/chef/client.rb
-      apt-get -y install libxslt-dev libxml2-dev # stupid Nokogiri!
-      gem install chef-zero --no-ri --no-rdo
-      gem install berkshelf --no-ri --no-rdo
       chef-zero -d
       cd /vagrant           
       knife environment from file environments/*
       knife node from file nodes/*
       knife role from file roles/* 
       berks upload --no-freeze --halt-on-frozen
+      chef-client
+      # hack around weird chef convergence issue
+      # when using both openstack and docker roles.
+      knife node run_list add allinone 'role[os-docker]'
       chef-client
       cp /root/openrc /home/vagrant/openrc
       chown vagrant:vagrant /home/vagrant/openrc
@@ -108,7 +112,7 @@ Vagrant.configure("2") do |config|
     SCRIPT
     config.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--cpus", 2]
-      vb.customize ["modifyvm", :id, "--memory", 1024]
+      vb.customize ["modifyvm", :id, "--memory", 2048]
       vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
       vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
     end
