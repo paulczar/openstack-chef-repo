@@ -28,4 +28,4 @@ cookbook 'openstack-object-storage', github: 'stackforge/cookbook-openstack-obje
 cookbook 'openstack-ops-database', github: 'stackforge/cookbook-openstack-ops-database'
 cookbook 'openstack-ops-messaging', github: 'stackforge/cookbook-openstack-ops-messaging'
 cookbook 'openstack-metering', github: 'stackforge/cookbook-openstack-metering'
-cookbook 'openstack-docker', github: 'paulczar/cookbook-openstack-docker'
+cookbook 'openstack-docker', github: 'paulczar/cookbook-openstack-docker', branch: 'dockergit'

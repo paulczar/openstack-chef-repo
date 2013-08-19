@@ -9,9 +9,6 @@ override_attributes(
     "allow_remote_root" => true,
     "root_network_acl" => "%"
   },
-  "docker" => {
-    "bind_uri" => "tcp://127.0.0.1:4243"
-  },
   "lxc" => {
     "allowed_types" => [ "ubuntu" ]
   },  
@@ -251,7 +248,6 @@ override_attributes(
         "host" => "33.33.33.60"
       },
       "debug" => true,
-      "data_api" => "glance.db.docker.api",
       "identity_service_chef_role" => "os-identity",
       "image_upload" => false,
       "rabbit_server_chef_role" => "os-ops-messaging",

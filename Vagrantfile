@@ -104,11 +104,13 @@ Vagrant.configure("2") do |config|
       echo give everything 20 seconds to settle down...
       sleep 20
       nova-manage service list
+      source /root/openrc
+      echo "Creating fake glance image for docker..."
+      glance image-create --name docker --is-public true --container-format bare --disk-format qcow2 --location https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
       echo "Run the below to test :-"
       echo "vagrant ssh"
       echo "source /home/vagrant/openrc"
-      echo "glance image-create --name dhrp/sshd"
-      echo "nova boot --flavor m1.tiny --image dhrp/sshd omgponies"
+      echo "nova boot --flavor m1.tiny --image docker mysql01"
     SCRIPT
     config.vm.provider :virtualbox do |vb|
       vb.customize ["modifyvm", :id, "--cpus", 2]

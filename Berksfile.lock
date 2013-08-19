@@ -111,11 +111,6 @@
       "git": "git://github.com/stackforge/cookbook-openstack-metering.git",
       "ref": "16af04fa8b5fb0abc55928c38f3121247614e3fe"
     },
-    "openstack-docker": {
-      "locked_version": "7.0.0",
-      "git": "git://github.com/paulczar/cookbook-openstack-docker.git",
-      "ref": "4508a782d6df908b40e3014425a99edd2988088b"
-    },
     "git": {
       "locked_version": "2.5.2"
     },
