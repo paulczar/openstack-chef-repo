@@ -53,7 +53,7 @@ done
 MYSQL02_IP=$(nova show $MYSQL02_ID | grep 'public network' | awk '{print $5}')
 echo " - $MYSQL02_IP"
 
-echo "- Sleep for 5 seconds, give MySQL a chance to start"
+echo "- Sleep for a few seconds, give MySQL a chance to start"
 sleep 5
 
 echo "- Creat replication user"
@@ -110,7 +110,7 @@ mysql -uroot -proot -h $MYSQL01_IP -AN -e "GRANT USAGE ON *.* TO 'haproxy'@'%';"
 tee /tmp/haproxy-mysql.txt <<EOF > /dev/null
 #docker
 image: paulczar/haproxy-mysql
-cmd: "/haproxy/start 'server Primary $MYSQL01_IP:3306' 'server Secondary $MYSQL02_IP:3306'"
+cmd: /haproxy/start $MYSQL01_IP:3306,$MYSQL02_IP:3306
 EOF
 
 HAPROXY_MYSQL=$(nova boot --flavor m1.tiny --image docker haproxy-mysql --user-data /tmp/haproxy-mysql.txt | grep '| id' | awk '{print $4}')
@@ -126,7 +126,82 @@ echo " - $HAPROXY_MYSQL_IP"
 echo "- Check our haproxy works"
 echo "   (should show alternating server_id)"
 
-#mysql -uroot -proot -h $HAPROXY_MYSQL_IP -e 'show variables like "server_id"' | grep server_id
-#mysql -uroot -proot -h $HAPROXY_MYSQL_IP -e 'show variables like "server_id"' | grep server_id
-#mysql -uroot -proot -h $HAPROXY_MYSQL_IP -e 'show variables like "server_id"' | grep server_id
-#mysql -uroot -proot -h $HAPROXY_MYSQL_IP -e 'show variables like "server_id"' | grep server_id
+mysql -uroot -proot -h $HAPROXY_MYSQL_IP -e 'show variables like "server_id"' | grep server_id
+mysql -uroot -proot -h $HAPROXY_MYSQL_IP -e 'show variables like "server_id"' | grep server_id
+mysql -uroot -proot -h $HAPROXY_MYSQL_IP -e 'show variables like "server_id"' | grep server_id
+mysql -uroot -proot -h $HAPROXY_MYSQL_IP -e 'show variables like "server_id"' | grep server_id
+
+
+echo 
+echo "Create Wordpress Web Servers"
+echo "------------------------"
+echo -n "- Create WordPress01"
+
+tee /tmp/wordpress.txt <<EOF > /dev/null
+#docker
+image: paulczar/apache2-wordpress
+cmd: /var/www/start $HAPROXY_MYSQL_IP
+EOF
+
+WORDPRESS1=$(nova boot --flavor m1.tiny --image docker wordpress01 --user-data /tmp/wordpress.txt | grep '| id' | awk '{print $4}')
+nova show $WORDPRESS1 | grep ACTIVE > /dev/null
+until [ $? -eq 0 ]; do
+  sleep 1
+  nova show $WORDPRESS1 | grep ACTIVE > /dev/null
+  echo -n "."
+done
+WORDPRESS1_IP=$(nova show $WORDPRESS1 | grep 'public network' | awk '{print $5}')
+echo " - $WORDPRESS1_IP"
+
+echo -n "- Create WordPress02"
+
+WORDPRESS2=$(nova boot --flavor m1.tiny --image docker wordpress02 --user-data /tmp/wordpress.txt | grep '| id' | awk '{print $4}')
+nova show $WORDPRESS2 | grep ACTIVE > /dev/null
+until [ $? -eq 0 ]; do
+  sleep 1
+  nova show $WORDPRESS2 | grep ACTIVE > /dev/null
+  echo -n "."
+done
+WORDPRESS2_IP=$(nova show $WORDPRESS2 | grep 'public network' | awk '{print $5}')
+echo " - $WORDPRESS2_IP"
+
+echo 
+echo "Create Web Load Balancer"
+echo "--------------------------"
+
+echo -n "- Create HAProxy-Web"
+
+tee /tmp/haproxy-web.txt <<EOF > /dev/null
+#docker
+image: paulczar/haproxy-web
+cmd: /haproxy/start $WORDPRESS1_IP:80,$WORDPRESS2_IP:80
+EOF
+
+HAPROXY_WEB=$(nova boot --flavor m1.tiny --image docker haproxy-web --user-data /tmp/haproxy-web.txt | grep '| id' | awk '{print $4}')
+nova show $HAPROXY_WEB | grep ACTIVE > /dev/null
+until [ $? -eq 0 ]; do
+  sleep 1
+  nova show $HAPROXY_WEB | grep ACTIVE > /dev/null
+  echo -n "."
+done
+HAPROXY_WEB_IP=$(nova show $HAPROXY_WEB | grep 'public network' | awk '{print $5}')
+
+
+echo "- Check it works"
+
+curl -s http://$HAPROXY_WEB_IP/phpinfo.php | grep "PHP API"
+
+
+echo "Environment Created!"
+echo "--------------------"
+echo
+echo "Browse to http://$HAPROXY_WEB_IP to access your wordpress site"
+echo
+echo Server Details :-
+echo
+echo MYSQL01_IP       : $MYSQL01_IP
+echo MYSQL02_IP       : $MYSQL02_IP
+echo HAPROXY_MYSQL_IP : $HAPROXY_MYSQL_IP
+echo WORDPRESS1_IP    : $WORDPRESS1_IP
+echo WORDPRESS2_IP    : $WORDPRESS2_IP
+echo HAPROXY_WEB_IP   : $HAPROXY_WEB_IP
