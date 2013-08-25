@@ -14,7 +14,7 @@ cookbook 'xfs', '1.1.0'
 cookbook 'yum', '2.2.2'
 cookbook "docker", github: "bflad/chef-docker"
 cookbook "golang", github: "NOX73/chef-golang"
-cookbook "lxc", github: "paulczar/lxc"
+cookbook "lxc", github: "hw-cookbooks/lxc"
 cookbook "modules", github: "Youscribe/modules-cookbook"
 
 cookbook 'openstack-block-storage', github: 'stackforge/cookbook-openstack-block-storage'

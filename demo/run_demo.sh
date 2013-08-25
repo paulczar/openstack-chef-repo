@@ -1,5 +1,6 @@
 #!/bin/bash
 
+[[ -e /home/vagrant/openrc ]] || echo "no openrc found"; exit 1
 source /home/vagrant/openrc
 
 #echo some basic house keeping
@@ -25,10 +26,8 @@ cmd: "mysqld_safe --server-id=1 --log-bin=mysql-bin --log-slave-updates=1  --aut
 EOF
 
 MYSQL01_ID=$(nova boot --flavor m1.tiny --image docker mysql01 --user-data /tmp/mysql01.txt | grep '| id' | awk '{print $4}')
-nova show $MYSQL01_ID | grep ACTIVE > /dev/null
-until [ $? -eq 0 ]; do
+until [ $(nova show $MYSQL01_ID | grep status | awk '{ print $4}') == "ACTIVE" ]; do
   sleep 1
-  nova show $MYSQL01_ID | grep ACTIVE > /dev/null
   echo -n "."
 done
 MYSQL01_IP=$(nova show $MYSQL01_ID | grep 'public network' | awk '{print $5}')
@@ -44,10 +43,8 @@ EOF
 
 
 MYSQL02_ID=$(nova boot --flavor m1.tiny --image docker mysql02 --user-data /tmp/mysql02.txt | grep '| id' | awk '{print $4}')
-nova show $MYSQL02_ID | grep ACTIVE > /dev/null
-until [ $? -eq 0 ]; do
+until [ $(nova show $MYSQL02_ID | grep status | awk '{ print $4}') == "ACTIVE" ]; do
   sleep 1
-  nova show $MYSQL02_ID | grep ACTIVE > /dev/null
   echo -n "."
 done
 MYSQL02_IP=$(nova show $MYSQL02_ID | grep 'public network' | awk '{print $5}')
@@ -93,6 +90,10 @@ echo "- Create database 'wordpress' on MySQL01"
 
 mysql -uroot -proot -h $MYSQL01_IP -e "create database wordpress;"
 
+echo "- Fill it with data"
+
+mysql -uroot -proot -h $MYSQL01_IP wordpress < wordpress.sql
+
 echo "- Sleep 2 seconds, then check that database 'wordpress' exists on MySQL02"
 
 sleep 2
@@ -114,10 +115,8 @@ cmd: /haproxy/start $MYSQL01_IP:3306,$MYSQL02_IP:3306
 EOF
 
 HAPROXY_MYSQL=$(nova boot --flavor m1.tiny --image docker haproxy-mysql --user-data /tmp/haproxy-mysql.txt | grep '| id' | awk '{print $4}')
-nova show $HAPROXY_MYSQL | grep ACTIVE > /dev/null
-until [ $? -eq 0 ]; do
+until [ $(nova show $HAPROXY_MYSQL | grep status | awk '{ print $4}') == "ACTIVE" ]; do
   sleep 1
-  nova show $HAPROXY_MYSQL | grep ACTIVE > /dev/null
   echo -n "."
 done
 HAPROXY_MYSQL_IP=$(nova show $HAPROXY_MYSQL | grep 'public network' | awk '{print $5}')
@@ -144,22 +143,19 @@ cmd: /var/www/start $HAPROXY_MYSQL_IP
 EOF
 
 WORDPRESS1=$(nova boot --flavor m1.tiny --image docker wordpress01 --user-data /tmp/wordpress.txt | grep '| id' | awk '{print $4}')
-nova show $WORDPRESS1 | grep ACTIVE > /dev/null
-until [ $? -eq 0 ]; do
+until [ $(nova show $WORDPRESS1 | grep status | awk '{ print $4}') == "ACTIVE" ]; do
   sleep 1
-  nova show $WORDPRESS1 | grep ACTIVE > /dev/null
   echo -n "."
 done
+
 WORDPRESS1_IP=$(nova show $WORDPRESS1 | grep 'public network' | awk '{print $5}')
 echo " - $WORDPRESS1_IP"
 
 echo -n "- Create WordPress02"
 
 WORDPRESS2=$(nova boot --flavor m1.tiny --image docker wordpress02 --user-data /tmp/wordpress.txt | grep '| id' | awk '{print $4}')
-nova show $WORDPRESS2 | grep ACTIVE > /dev/null
-until [ $? -eq 0 ]; do
+until [ $(nova show $WORDPRESS2 | grep status | awk '{ print $4}') == "ACTIVE" ]; do
   sleep 1
-  nova show $WORDPRESS2 | grep ACTIVE > /dev/null
   echo -n "."
 done
 WORDPRESS2_IP=$(nova show $WORDPRESS2 | grep 'public network' | awk '{print $5}')
@@ -178,10 +174,8 @@ cmd: /haproxy/start $WORDPRESS1_IP:80,$WORDPRESS2_IP:80
 EOF
 
 HAPROXY_WEB=$(nova boot --flavor m1.tiny --image docker haproxy-web --user-data /tmp/haproxy-web.txt | grep '| id' | awk '{print $4}')
-nova show $HAPROXY_WEB | grep ACTIVE > /dev/null
-until [ $? -eq 0 ]; do
+until [ $(nova show $HAPROXY_WEB | grep status | awk '{ print $4}') == "ACTIVE" ]; do  
   sleep 1
-  nova show $HAPROXY_WEB | grep ACTIVE > /dev/null
   echo -n "."
 done
 HAPROXY_WEB_IP=$(nova show $HAPROXY_WEB | grep 'public network' | awk '{print $5}')
@@ -205,3 +199,6 @@ echo HAPROXY_MYSQL_IP : $HAPROXY_MYSQL_IP
 echo WORDPRESS1_IP    : $WORDPRESS1_IP
 echo WORDPRESS2_IP    : $WORDPRESS2_IP
 echo HAPROXY_WEB_IP   : $HAPROXY_WEB_IP
+echo
+echo you may want to run the following :-
+echo "# sudo echo \"$HAPROXY_WEB_IP   wordpress\" >> /etc/hosts"

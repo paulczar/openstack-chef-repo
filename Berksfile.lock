@@ -46,11 +46,6 @@
       "git": "git://github.com/NOX73/chef-golang.git",
       "ref": "2cc2bbdaf8f57d1c1d3fca2fb533e5e381bc9acf"
     },
-    "lxc": {
-      "locked_version": "1.1.0",
-      "git": "git://github.com/paulczar/lxc.git",
-      "ref": "f3b7c6206373a3d6e9b84224e765e438a9bda4dd"
-    },
     "modules": {
       "locked_version": "0.1.2",
       "git": "git://github.com/Youscribe/modules-cookbook.git",
